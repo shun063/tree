@@ -41,6 +41,7 @@
     // 木テクスチャー読み込み
     var textureLoader = new THREE.TextureLoader();
     var texture0 = textureLoader.load("img/tree0.png");
+    // 板ポリ左用
     var mat0 = new THREE.MeshLambertMaterial();
     mat0.map = texture0;
     // 板ポリ右用
@@ -75,6 +76,13 @@
     plane.position.z = -5;
     scene.add( plane );
 
+    //ドーナッツ
+    var torusGeometry = new THREE.TorusGeometry( 0.5, 0.2, 6, 12 ); 
+    var torus = new THREE.Mesh( torusGeometry, mat0 );
+    torus.position.set( 0, 2, -5);
+    torus.castShadow = true;
+    scene.add( torus );
+
      // 平行光源1
     var directionalLight1 = new THREE.DirectionalLight(0xffffff);
     directionalLight1.position.set(1, 1, 1);
@@ -93,6 +101,9 @@
       // 箱を回転させる
       box.rotation.x += 0.05;
       box.rotation.y += 0.05;
+
+      torus.rotation.x += 0.01;
+      torus.rotation.y += 0.01;
 
       //描画
       renderer.render(scene, camera);
