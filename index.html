@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>sample4</title>
+
+  <!-- three.jsを読み込む(ローカル) -->
+  <!-- <script src="./three.js"></script> -->
+  <!-- three.jsを読み込む(CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.min.js"></script>
+
+</head>
+<body>
+ <script>
+  var init = function() {
+
+    var width = 800,
+        height = 600;
+  
+    // レンダラーを作成
+    var renderer = new THREE.WebGLRenderer();
+    document.body.appendChild(renderer.domElement);
+    renderer.setSize(width, height);
+    // 背景の色を設定
+    renderer.setClearColor(0xffffdd);
+  
+    // シーンを作成
+    var scene = new THREE.Scene();
+  
+    // カメラを作成
+    var camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+    camera.position.set(1, 1, 5); //位置を指定
+    camera.lookAt(0, 0, 0); //見つめる方向
+
+    // テクスチャー読み込み
+    var textureLoader = new THREE.TextureLoader();
+    var texture = textureLoader.load("cit.png");
+    var mat = new THREE.MeshPhongMaterial();
+    mat.map = texture;
+
+    // 木テクスチャー読み込み
+    var textureLoader = new THREE.TextureLoader();
+    var texture0 = textureLoader.load("img/tree0.png");
+    // 板ポリ左用
+    var mat0 = new THREE.MeshLambertMaterial();
+    mat0.map = texture0;
+    // 板ポリ右用
+    var mat1 =
+    new THREE.MeshLambertMaterial({transparent: true});
+    mat1.map = texture0;
+
+    // helper
+    const gridHelper = new THREE.GridHelper(2,10); // size, step
+    scene.add(gridHelper);
+    const axisHelper = new THREE.AxisHelper(2); //軸の長さ X：赤、Y：緑、z：青
+    scene.add(axisHelper);
+    
+     //ライト
+     var light = new THREE.SpotLight({ color: 0xffffff });
+    light.position.set(10,10,10)
+    light.castShadow = true;
+    light.shadow.mapSize.width = 2048;
+    light.shadow.mapSize.height = 2048;
+    scene.add(light);
+
+    // 箱を作成
+    var geometry = new THREE.BoxGeometry(1, 1, 1);
+    var box = new THREE.Mesh(geometry, mat);
+    box.position.z = (0,0,0);
+    box.castShadow = true;
+    scene.add(box);
+  
+    // 平面を作成
+    var geometry = new THREE.PlaneGeometry( 1, 1, 1 );
+    var material = new THREE.MeshPhongMaterial( {color: 0x0000ff, side: THREE.DoubleSide} );
+    var plane = new THREE.Mesh( geometry, material );
+    plane.position.z = -5;
+    scene.add( plane );
+
+     // 平行光源1
+    var directionalLight1 = new THREE.DirectionalLight(0xffffff);
+    directionalLight1.position.set(1, 1, 1);
+    // シーンに追加
+    scene.add(directionalLight1);
+    // 平行光源2
+        var directionalLight2 = new THREE.DirectionalLight(0xffffff);
+    directionalLight2.position.set(-1, 1, 1);
+    // シーンに追加
+    scene.add(directionalLight2);
+  
+    // 初回実行
+    var update = function() {
+      requestAnimationFrame(update);
+  
+      // 箱を回転させる
+      box.rotation.x += 0.05;
+      box.rotation.y += 0.05;
+
+      //描画
+      renderer.render(scene, camera);
+    };
+    update();
+  }
+  window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
