@@ -19,10 +19,8 @@
   
     // レンダラーを作成
     var renderer = new THREE.WebGLRenderer();
-    document.body.appendChild(renderer.domElement);
     renderer.setSize(width, height);
-    // 背景の色を設定
-    renderer.setClearColor(0xffffdd);
+    document.body.appendChild(renderer.domElement);
   
     // シーンを作成
     var scene = new THREE.Scene();
@@ -37,16 +35,6 @@
     var texture = textureLoader.load("cit.png");
     var mat = new THREE.MeshPhongMaterial();
     mat.map = texture;
-
-    // 木テクスチャー読み込み
-    var textureLoader = new THREE.TextureLoader();
-    var texture0 = textureLoader.load("tree0.png");
-    // 板ポリ左用
-    var mat0 = new THREE.MeshLambertMaterial();
-    mat0.map = texture0;
-    // 板ポリ右用
-    var mat1 = new THREE.MeshLambertMaterial({transparent: true});
-    mat1.map = texture0;
 
     // helper
     const gridHelper = new THREE.GridHelper(2,10); // size, step
@@ -69,16 +57,53 @@
     box.castShadow = true;
     scene.add(box);
   
-    
+// 平面を作成
+var geometry = new THREE.PlaneGeometry( 1, 1, 1 );
+var material = new THREE.MeshPhongMaterial( {color: 0x0000ff, side: THREE.DoubleSide} );
+var plane = new THREE.Mesh( geometry, material );
+plane.position.z = -5;
+scene.add( plane );
 
-    //ドーナッツ
-    var torusGeometry = new THREE.TorusGeometry( 0.5, 0.2, 6, 12 ); 
-    var torus = new THREE.Mesh( torusGeometry, mat1 );
-    torus.position.set( 0, 2, -5);
-    torus.castShadow = true;
-    scene.add( torus );
+//角すい〜円すい
+var coneGeometry = new THREE.ConeGeometry( 0.5, 1, 5 ); 
+var coneMaterial = new THREE. MeshPhongMaterial( {color: 0x0000ff} );
+var cone = new THREE.Mesh( coneGeometry, coneMaterial );
+cone.position.set( 1, 0, -5 );
+scene.add( cone );  
 
-     // 平行光源1
+//角柱〜円柱
+var cylinderGeometry = new THREE.CylinderGeometry( 0.3, 0.5, 1, 8 );
+//上の底面の半径、下の底面の半径、高さ、何角柱か
+var cylinderMaterial = new THREE.MeshPhongMaterial( {color: 0x008000} );
+var cylinder = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+cylinder.position.set( -2, 1, -5 );
+scene.add( cylinder );
+
+//球
+var sphereGeometry = new THREE.SphereGeometry( 0.5, 32, 32 );
+var sphereMaterial = new THREE. MeshPhongMaterial( {color: 0x0ffbff,wireframe: true} );
+var sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+sphere.position.set( 0, 0, 5 );
+scene.add( sphere );
+
+//ドーナッツ
+var torusGeometry = new THREE.TorusGeometry( 0.5, 0.2, 6, 12 ); 
+var torusMaterial = new THREE. MeshPhongMaterial( { color: 0xffdab9 } );
+var torus = new THREE.Mesh( torusGeometry, torusMaterial );
+torus.position.set( 0, 2, -5);
+scene.add( torus );
+
+
+//なんかクネクネしてるやつ
+var torusKnotGeometry = new THREE.TorusKnotGeometry( 1.5, 0.3, 20, 6, 3, 2 ); 
+var torusKnotMaterial = new THREE. MeshPhongMaterial( { color: 0x8a2be2, wireframe: true } );
+var torusKnot = new THREE.Mesh( torusKnotGeometry, torusKnotMaterial );
+torusKnot.position.set( -5, 0, -5 );
+scene.add( torusKnot );
+
+
+  
+    // 平行光源1
     var directionalLight1 = new THREE.DirectionalLight(0xffffff);
     directionalLight1.position.set(1, 1, 1);
     // シーンに追加
@@ -97,8 +122,17 @@
       box.rotation.x += 0.05;
       box.rotation.y += 0.05;
 
+      cylinder.rotation.x += 0.01;
+      cylinder.rotation.y += 0.01;
+
       torus.rotation.x += 0.01;
       torus.rotation.y += 0.01;
+
+      cone.rotation.x += 0.01;
+      cone.rotation.y += 0.01;
+
+      torusKnot.rotation.x += 0.01;
+      torusKnot.rotation.y += 0.01;
 
       //描画
       renderer.render(scene, camera);
